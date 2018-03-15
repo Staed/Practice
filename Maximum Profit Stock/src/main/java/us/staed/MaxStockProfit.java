@@ -48,6 +48,7 @@ public class MaxStockProfit {
         }
 
         Map<Integer, List<Integer>> section = new HashMap<>();
+        Map<Integer, Integer> minMap = new HashMap<>();
 
         // O(n)
         // Stream through it
@@ -56,7 +57,10 @@ public class MaxStockProfit {
             .map(b -> {
                 int max = b.get(0);
                 int min = b.stream().min(Integer::min).get();
+
                 section.put(max - min, b);
+                minMap.put(max - min, min);
+
                 return max - min;
             })
             .filter(a -> a > 0)
@@ -68,7 +72,7 @@ public class MaxStockProfit {
         } else {
             List<Integer> sub = section.get(maxDiff);
             int start = Collections.indexOfSubList(list, sub);
-            int end = start + list.subList(start, start + sub.size()).indexOf(sub.stream().min(Integer::min).get());
+            int end = start + list.subList(start, start + sub.size()).indexOf(minMap.get(maxDiff));
 
             return new Pair<>(start, end);
         }
