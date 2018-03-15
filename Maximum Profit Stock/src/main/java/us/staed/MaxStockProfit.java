@@ -7,20 +7,17 @@ import javafx.util.Pair;
 public class MaxStockProfit {
     public static void main(String ...args) {
         List<List<Integer>> testCases = Arrays.asList(
-            Arrays.asList(100, 180, 260, 310, 40, 535, 695)
+            Arrays.asList(100, 180, 260, 310, 40, 535, 695),
+            Arrays.asList(10, 18, 26, 31, 40, 53, 12)
         );
 
         testCases.stream()
-            .forEach(MaxStockProfit::difference);
+            .map(MaxStockProfit::difference)
+            .map(a -> "(" + a.getKey() + ", " + a.getValue() + ")")
+            .forEach(System.out::println);
     }
 
-    private static void difference(List<Integer> list) {
-        System.out.println(
-            list.stream()
-                .collect(StringBuilder::new, (a,b) -> a.append(", " + b), StringBuilder::append)
-                .delete(0,2).toString()
-        );
-
+    private static Pair<Integer, Integer> difference(List<Integer> list) {
         // Approach the problem by breaking the array into subarrays, 
         // divided by the local maximums. Then compute the largest
         // difference in each subarray and compare the subarray results
@@ -43,32 +40,37 @@ public class MaxStockProfit {
 
         // O(1)
         // Handle empty list case
-        if (curList.isEmpty()) curList.add(0);
-        if (subarrays.isEmpty()) subarrays.add(curList);
+        if (curList.isEmpty() && subarrays.isEmpty()) {
+            curList.add(0);
+            subarrays.add(curList);
+        } else {
+            subarrays.add(curList);
+        }
 
-        Map<Integer, Integer> pair = new HashMap<>();
+        Map<Integer, List<Integer>> section = new HashMap<>();
 
         // O(n)
         // Stream through it
-        int maxValue = subarrays.stream()
+        int maxDiff = subarrays.stream()
             .filter(a -> a.size() > 1)
             .map(b -> {
-                int max = b.stream().max(Integer::max).get();
+                int max = b.get(0);
                 int min = b.stream().min(Integer::min).get();
-                pair.put(max - min, b.indexOf(min));
+                section.put(max - min, b);
                 return max - min;
             })
             .filter(a -> a > 0)
-            .max(Integer::max).get();
+            .max(Integer::max).orElse(-1);
         
-        System.out.println(maxValue);
+        // Return the indices of the best stock buy/sell or (-1,-1) if it doesn't exist
+        if (maxDiff < 0) {
+            return new Pair<>(-1,-1);
+        } else {
+            List<Integer> sub = section.get(maxDiff);
+            int start = Collections.indexOfSubList(list, sub);
+            int end = start + list.subList(start, start + sub.size()).indexOf(sub.stream().min(Integer::min).get());
 
-        // Need to access Optional, after it is set to return an actual value
-        // Use some other lambda
-
-        // int end = pair.get(maxValue);
-        // int start = list.subList(0, end).lastIndexOf(maxValue);
-        
-        // System.out.println(start + ", " + pair.get(maxValue.get()));
+            return new Pair<>(start, end);
+        }
     }
 }
