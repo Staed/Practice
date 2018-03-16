@@ -7,3 +7,4 @@ javac -d %tgt% %loc%\AddTwoDigits.java
 javac -d %tgt% %loc%\LargestNumber.java
 javac -d %tgt% %loc%\LateRide.java
 javac -d %tgt% %loc%\PhoneCall.java
+javac -d %tgt% %loc%\ExtraNumber.java
