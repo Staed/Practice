@@ -1,6 +1,9 @@
 @echo off
 
-javac -d "target\classes" src\main\java\us\staed\AddTwoDigits.java
-javac -d "target\classes" src\main\java\us\staed\LargestNumber.java
-javac -d "target\classes" src\main\java\us\staed\LateRide.java
-javac -d "target\classes" src\main\java\us\staed\PhoneCall.java
+set tgt="target\classes"
+set loc="src\main\java\us\staed"
+
+javac -d %tgt% %loc%\AddTwoDigits.java
+javac -d %tgt% %loc%\LargestNumber.java
+javac -d %tgt% %loc%\LateRide.java
+javac -d %tgt% %loc%\PhoneCall.java
